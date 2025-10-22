@@ -169,4 +169,8 @@ class JobTest extends TestCase
         $deleteResponse = $this->actingAs($user)->deleteJson("/api/jobs/{$job->id}");
         $deleteResponse->assertStatus(403);
     }
+
+
+    
+
 }

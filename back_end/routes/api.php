@@ -32,27 +32,28 @@ Route::middleware('auth:sanctum')->post('/logout',[LoginController::class,"logou
 
 
 
+//pulic route 
 
-
-
-
+Route::get('/jobs', [JobController::class, 'index']);
+Route::get('/jobs/{id}', [JobController::class, 'show']);
+Route::post('/jobs/search', [JobController::class, 'search']);
 
 // admin routes 
 
-Route::middleware('auth:sanctum','role:admin')->group(function(){
-    Route::get('admin/users',[AdminController::class,'getAllUsers']);
-    Route::get('admin/personal-data',[AdminController::class,'getPersonalDataFromAdmin']);
-    Route::put('admin/users/{id}',[AdminController::class,'updateUserData']);
-    Route::delete('admin/users/{id}',[AdminController::class,'deleteUser']);
-    Route::get('/admin/applications', [ApplicationController::class, 'getAllApplications']);
+Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {
+    Route::get('/users', [AdminController::class, 'getAllUsers']);
+    Route::get('/personal-data', [AdminController::class, 'getPersonalDataFromAdmin']);
+    Route::put('/users/{id}', [AdminController::class, 'updateUserData']);
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+    Route::get('/applications', [ApplicationController::class, 'getAllApplications']);
 });
+
 
 
 // Job Controller
 
 Route::middleware('auth:sanctum','role:employeur|admin')->group(function(){
     Route::post('/jobs',[JobController::class,'store']);
-    Route::get('/jobs',[JobController::class,'index']);
     Route::put('/jobs/{id}',[JobController::class,'update']);
     Route::delete('/jobs/{id}',[JobController::class,'destroy']);
 });

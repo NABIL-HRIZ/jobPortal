@@ -9,6 +9,9 @@ class JobController extends Controller
     
 
     public function store(Request $request){
+
+        $this->authorize('create', Job::class);
+
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -18,9 +21,10 @@ class JobController extends Controller
             'salary' => 'nullable|numeric',
         ]);
 
-        $validatedData['posted_by'] = $request->user()->id;
-
-        $job = Job::create($validatedData);
+      $job = Job::create([
+            ...$validatedData,
+            'posted_by' => auth()->id(),
+        ]);
 
         return response()->json([
             'status' => 'success',
@@ -29,18 +33,36 @@ class JobController extends Controller
         ], 201);
     }
 
+  
+  
     public function index(){
-        $jobs = Job::with('employer:id,name,email')->paginate(10);
 
+    
+        $jobs=with('employer:id,name,email')->paginate(10);
+        
         return response()->json([
-            'status' => 'success',
-            'jobs' => $jobs
-        ], 200);
+            'status'=>'success',
+            'jobs'=>$jobs,
+        ],200);
+
 
     }
 
+    public function show($id){
+        $job = Job::with('employer:id,name,email')->findOrFail($id);
+
+        return response()->json([
+            'status' => 'success',
+            'job' => $job
+        ], 200);
+    }
+
+    
+    
     public function update(Request $request, $id){
         $job = Job::findOrFail($id);
+
+        $this->authorize('update', $job);
 
         $validatedData = $request->validate([
             'title' => 'sometimes|required|string|max:255',
@@ -64,6 +86,7 @@ class JobController extends Controller
 
     public function destroy($id){
         $job = Job::findOrFail($id);
+        $this->authorize('delete', $job);
         $job->delete();
 
         return response()->json([
@@ -72,5 +95,27 @@ class JobController extends Controller
         ], 200);
     }
 
-   
+
+  
+     public function search(Request $request){
+
+        $query=Job::query();
+
+        if($request->filled('title')){
+            $query->where('title','Like','%'.$request->title.'%');
+        }
+        if($request->filled('location')){
+            $query->where('location','Like','%'.$request->location.'%');
+        }
+        if($request->filled('company_name')){
+            $query->where('company_name','Like','%'.$request->company_name.'%');
+        }
+
+        $jobs=$query->with('employer:id,name,email')->paginate(10);
+
+        return response()->json([
+            'status'=>'success',
+            'jobs'=>$jobs
+        ],200);
+    }
 }
