@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main"] # branch main so hen it calles ghadi ydir khdamto
   pull_request:
     branches: ["main"]
 
