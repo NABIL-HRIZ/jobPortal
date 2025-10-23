@@ -1,8 +1,8 @@
-name: CI
+name: Laravel CI
 
 on:
   push:
-    branches: ["main"] # branch main so hen it calles ghadi ydir khdamto
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -22,13 +22,17 @@ jobs:
           coverage: none
 
       - name: Installer dépendances composer
-        run: composer install --prefer-dist --no-progress --no-suggest
+        run: composer install --prefer-dist --no-progress
+        working-directory: back_end
 
       - name: Copier .env.example vers .env
         run: cp .env.example .env
+        working-directory: back_end
 
       - name: Générer clé app
         run: php artisan key:generate
+        working-directory: back_end
 
       - name: Lancer les tests
         run: php artisan test
+        working-directory: back_end
