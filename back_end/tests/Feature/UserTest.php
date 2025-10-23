@@ -89,7 +89,7 @@ class UserTest extends TestCase
 
         Sanctum::actingAs($user);
 
-        $response = $this->getJson('/api/applications');
+        $response = $this->getJson('/api/user/applications');
 
         $response->assertStatus(200)
                  ->assertJsonStructure([

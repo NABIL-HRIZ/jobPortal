@@ -15,6 +15,173 @@
         }
     ],
     "paths": {
+        "/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all users with roles",
+                "operationId": "06d892de062bd84601131f920878264e",
+                "responses": {
+                    "200": {
+                        "description": "List of users with roles"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/personal-data": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get authenticated admin's personal data",
+                "operationId": "b2034f54df4272a41ba94109a3ca0396",
+                "responses": {
+                    "200": {
+                        "description": "Authenticated user's data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/users/{id}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update a user's name and/or email",
+                "operationId": "54b1af38b1aeff6584e7f13d9fcf34f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New Name"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "new@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete a user",
+                "operationId": "c3d89b5334aaae1703053279305a83be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the user to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/employer/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Get applications for jobs posted by the authenticated employer",
+                "operationId": "672ab5fe3bfb6da5a8fdce1959c6e26e",
+                "responses": {
+                    "200": {
+                        "description": "List of applications for employer's jobs"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/admin/applications": {
+            "get": {
+                "tags": [
+                    "Applications"
+                ],
+                "summary": "Get all applications (Admin only)",
+                "operationId": "4dac0d67b7b509131bafbd8db2c97870",
+                "responses": {
+                    "200": {
+                        "description": "List of all job applications"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/login": {
             "post": {
                 "tags": [
@@ -217,6 +384,391 @@
                     }
                 }
             }
+        },
+        "/jobs": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Get all jobs",
+                "operationId": "61095dd3fdb7b25e7daa0084b396ca6e",
+                "responses": {
+                    "200": {
+                        "description": "List of jobs"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Create a new job",
+                "operationId": "724b21b194916208376d71437be61a8b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "company_name",
+                                    "location",
+                                    "employment_type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "company_name": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "employment_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "full-time",
+                                            "part-time",
+                                            "contract",
+                                            "internship"
+                                        ]
+                                    },
+                                    "salary": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Job posted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/{id}": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Get a single job",
+                "operationId": "40e7eaa66d57253caa249e6f6fc06763",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job details"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Update a job",
+                "operationId": "73ddd3048c72f5dbb787a4733069f5d1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "company_name": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "employment_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "full-time",
+                                            "part-time",
+                                            "contract",
+                                            "internship"
+                                        ]
+                                    },
+                                    "salary": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Job updatedd successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Delete a job",
+                "operationId": "7d6ee44631cf0dc1175069d51532c9b8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the job to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Job deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Job not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/jobs/search": {
+            "post": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "Search jobs",
+                "operationId": "64479b9803ef5aed151ffad67a4b9459",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "company_name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Filtered jobs"
+                    }
+                }
+            }
+        },
+        "/personal-data": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get personal data of the authenticated user",
+                "operationId": "71f884209dd7c91ed10dc2941cd009ca",
+                "responses": {
+                    "200": {
+                        "description": "User data returned successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/applications": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Submit a job application",
+                "operationId": "ca31bd612c53c5417427c27da3dc99ac",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "job_id",
+                                    "phone_number",
+                                    "cover_letter",
+                                    "resume_path"
+                                ],
+                                "properties": {
+                                    "job_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "phone_number": {
+                                        "type": "string",
+                                        "example": "123-456-7890"
+                                    },
+                                    "cover_letter": {
+                                        "type": "string",
+                                        "example": "I'm very interested in this role..."
+                                    },
+                                    "resume_path": {
+                                        "type": "string",
+                                        "example": "/storage/resumes/user123.pdf"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Application submitted successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/applications": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get applications submitted by the authenticated user",
+                "operationId": "a4586725dbaac691eddd0ffe0e532e1e",
+                "responses": {
+                    "200": {
+                        "description": "List of user's job applications",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "applications": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "job_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -228,6 +780,22 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin Management Endpoints"
+        },
+        {
+            "name": "Applications",
+            "description": "Endpoints related to job applications"
+        },
+        {
+            "name": "Jobs",
+            "description": "API Endpoints for Managing Jobs"
+        },
+        {
+            "name": "User",
+            "description": "Endpoints for authenticated user operations"
+        },
         {
             "name": "Authentification",
             "description": "Authentification"

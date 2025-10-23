@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Spatie\Permission\Models\Role;
 
 class RegisterTest extends TestCase
 {
@@ -13,6 +14,9 @@ class RegisterTest extends TestCase
      /** @test */
     public function user_can_register_successfully()
     {
+        Role::create(['name' => 'user']);
+
+
         $data = [
             'name' => 'Nabil HRIZ',
             'email' => 'nabil@test.com',

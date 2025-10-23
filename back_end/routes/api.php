@@ -70,6 +70,6 @@ Route::middleware(['auth:sanctum', 'role:employeur'])->group(function () {
 Route::middleware('auth:sanctum','role:user')->group(function(){
     Route::get('/personal-data',[UserController::class,'getPersonalDataFromUser']);
     Route::post('/applications',[UserController::class,'storeApplication']);
-    Route::get('/applications',[UserController::class,'getOwnApplications']);
+    Route::get('/user/applications',[UserController::class,'getOwnApplications']);
 
 });
